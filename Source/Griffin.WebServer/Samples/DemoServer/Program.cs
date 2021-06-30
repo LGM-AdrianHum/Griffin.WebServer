@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Authentication;
 using System.Text;
 using System.Threading.Tasks;
 using Griffin.Logging;
@@ -22,14 +23,15 @@ namespace DemoServer
             var moduleManager = new ModuleManager();
 
             // Let's serve our downloaded files (Windows 7 users)
-            var fileService = new DiskFileService("/", string.Format(@"C:\Users\{0}\Downloads", Environment.UserName));
+            var fileService = new DiskFileService("/", $@"C:\Users\{Environment.UserName}\Downloads");
 
             // Create the file module and allow files to be listed.
             var module = new FileModule(fileService)
             {
                 AllowFileListing = true,
-                
             };
+
+
 
             // Add the module
             moduleManager.Add(module);
@@ -38,6 +40,8 @@ namespace DemoServer
             moduleManager.Add(new MyModule2());
             // And start the server.
             var server = new HttpServer(moduleManager);
+            server.AllowedSslProtocols = SslProtocols.Ssl2;
+            
             server.Start(IPAddress.Any, 0);
             Console.WriteLine("PORT " + server.LocalPort);
 

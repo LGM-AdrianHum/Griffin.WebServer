@@ -32,8 +32,7 @@ namespace Griffin.WebServer.Files
         /// <param name="fileService">The file service.</param>
         public FileModule(IFileService fileService)
         {
-            if (fileService == null) throw new ArgumentNullException("fileService");
-            _fileService = fileService;
+            _fileService = fileService ?? throw new ArgumentNullException("fileService");
         }
 
         /// <summary>
